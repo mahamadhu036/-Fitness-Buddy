@@ -15,6 +15,76 @@
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>" />
   <link rel="stylesheet" href="/css/styles.css" />
+
+  <!-- Google Analytics (replace G-XXXXXXXXXX with your real Measurement ID) -->
+  <!-- Get your ID free at: https://analytics.google.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    /* ── Live Stats Widget ───────────────────────────────────────────── */
+    .stats-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, rgba(15,15,35,0.97), rgba(30,20,60,0.97));
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(139,92,246,0.3);
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 9999;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      flex-wrap: wrap;
+    }
+    .stats-bar-label {
+      color: rgba(255,255,255,0.45);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 4px;
+    }
+    .stats-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stats-bar-value {
+      color: #a78bfa;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 24px;
+      transition: all 0.4s ease;
+    }
+    .stats-bar-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .stats-bar-brand {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      margin-left: auto;
+    }
+    .stats-bar-brand span { color: #a78bfa; }
+    @media (max-width: 480px) {
+      .stats-bar { gap: 12px; padding: 6px 12px; }
+      .stats-bar-brand { display: none; }
+    }
+  </style>
 </head>
 
 <body>
@@ -634,6 +704,65 @@
   <script src="/js/agent.js"></script>
   <script src="/js/achievements.js"></script>
   <script src="/js/app.js"></script>
+
+<!-- ── Live Visitor Stats Bar ──────────────────────────────────────────── -->
+<div class="stats-bar" id="statsBar">
+  <div class="stats-bar-item">
+    <div class="stats-bar-dot"></div>
+    <span class="stats-bar-label">Live</span>
+  </div>
+  <div class="stats-bar-item">
+    <span class="stats-bar-label">👥 Visitors</span>
+    <span class="stats-bar-value" id="stat-visits">—</span>
+  </div>
+  <div class="stats-bar-item">
+    <span class="stats-bar-label">🌍 Unique</span>
+    <span class="stats-bar-value" id="stat-unique">—</span>
+  </div>
+  <div class="stats-bar-item">
+    <span class="stats-bar-label">🤖 AI Chats</span>
+    <span class="stats-bar-value" id="stat-chats">—</span>
+  </div>
+  <div class="stats-bar-item">
+    <span class="stats-bar-label">⏱ Uptime</span>
+    <span class="stats-bar-value" id="stat-uptime">—</span>
+  </div>
+  <div class="stats-bar-brand">Powered by <span>IBM Granite</span></div>
+</div>
+
+<script>
+  // ── Live Stats Fetcher ───────────────────────────────────────────────────
+  async function fetchStats() {
+    try {
+      const res = await fetch('/api/stats');
+      if (!res.ok) return;
+      const d = await res.json();
+
+      const animate = (id, val) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.transform = 'scale(1.2)';
+        el.style.color = '#c4b5fd';
+        el.textContent = val;
+        setTimeout(() => {
+          el.style.transform = 'scale(1)';
+          el.style.color = '#a78bfa';
+        }, 300);
+      };
+
+      animate('stat-visits',  d.totalVisits.toLocaleString());
+      animate('stat-unique',  d.uniqueVisitors.toLocaleString());
+      animate('stat-chats',   (d.chatRequests + d.agentRequests).toLocaleString());
+      animate('stat-uptime',  d.uptime);
+    } catch (e) {
+      // silently fail — stats are non-critical
+    }
+  }
+
+  // Fetch immediately + every 30 seconds
+  fetchStats();
+  setInterval(fetchStats, 30000);
+</script>
 
 </body>
 
