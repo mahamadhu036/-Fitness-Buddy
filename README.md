@@ -2,15 +2,7 @@
 
 <div align="center">
 
-![Fitness Buddy](https://img.shields.io/badge/Fitness%20Buddy-AI%20Coach-4f8ef7?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIj7wn4+X77iPPC90ZXh0Pjwvc3ZnPg==)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-4.x-000000?style=for-the-badge&logo=express&logoColor=white)
-![IBM WatsonX](https://img.shields.io/badge/IBM%20WatsonX-Granite-BE95FF?style=for-the-badge&logo=ibm&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-22d97e?style=for-the-badge)
-
 **Your personal AI-powered fitness coach — workouts, nutrition, calorie tracking, and daily motivation.**
-
-[🚀 Quick Start](#-quick-start) · [✨ Features](#-features) · [📁 Project Structure](#-project-structure) · [🔧 Configuration](#-configuration) · [🤖 AI Integration](#-ai-integration)
 
 </div>
 

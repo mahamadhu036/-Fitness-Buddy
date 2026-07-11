@@ -35,7 +35,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`
   ╔══════════════════════════════════╗
   ║   🏋️  Fitness Buddy AI Coach     ║
@@ -43,6 +43,26 @@ app.listen(PORT, () => {
   ║   http://localhost:${PORT}         ║
   ╚══════════════════════════════════╝
   `);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const nextPort = parseInt(PORT) + 1;
+    console.warn(`\n⚠️  Port ${PORT} is already in use.`);
+    console.warn(`   Trying port ${nextPort} instead...\n`);
+    app.listen(nextPort, () => {
+      console.log(`
+  ╔══════════════════════════════════╗
+  ║   🏋️  Fitness Buddy AI Coach     ║
+  ║   Server running on port ${nextPort}   ║
+  ║   http://localhost:${nextPort}         ║
+  ╚══════════════════════════════════╝
+      `);
+    });
+  } else {
+    console.error('[Server] Fatal error:', err.message);
+    process.exit(1);
+  }
 });
 
 module.exports = app;
