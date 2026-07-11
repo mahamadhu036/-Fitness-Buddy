@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.local
+.env.production
+.git/
+.gitignore
+*.log
+logs/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

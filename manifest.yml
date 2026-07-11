@@ -1,0 +1,10 @@
+---
+applications:
+  - name: fitness-buddy
+    memory: 256M
+    instances: 1
+    buildpack: nodejs_buildpack
+    command: npm start
+    random-route: true
+    env:
+      NODE_ENV: production
