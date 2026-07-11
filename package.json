@@ -1,0 +1,27 @@
+{
+  "name": "fitness-buddy",
+  "version": "1.0.0",
+  "description": "AI-powered personal fitness coach and health companion",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "dependencies": {
+    "@ibm-cloud/watsonx-ai": "^1.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "ibm-cloud-sdk-core": "^5.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["fitness", "ai", "health", "nutrition", "workout", "chatbot"],
+  "author": "Fitness Buddy Team",
+  "license": "MIT"
+}
