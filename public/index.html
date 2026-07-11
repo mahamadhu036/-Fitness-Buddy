@@ -635,6 +635,27 @@
   <script src="/js/app.js"></script>
 
   <!-- Watson Orchestrate Agent -->
+  <script>
+    window.wxOConfiguration = {
+      orchestrationID: "daaa4cd98c8149d69b2fcb2bbadbc2ba_7a4f1be4-a7a7-426d-b282-3a815b00e477",
+      hostURL: "https://eu-de.watson-orchestrate.cloud.ibm.com",
+      rootElementID: "root",
+      deploymentPlatform: "ibmcloud",
+      crn: "crn:v1:bluemix:public:watsonx-orchestrate:eu-de:a/daaa4cd98c8149d69b2fcb2bbadbc2ba:7a4f1be4-a7a7-426d-b282-3a815b00e477::",
+      chatOptions: {
+        agentId: "b191c86a-f34f-448f-bf67-156c51df91ec",
+        agentEnvironmentId: "b3a16b1f-3226-490e-ad5c-97972075a6a5"
+      }
+    };
+    setTimeout(function () {
+      const script = document.createElement('script');
+      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+      script.addEventListener('load', function () {
+        wxoLoader.init();
+      });
+      document.head.appendChild(script);
+    }, 0);
+  </script>
 
 </body>
 
