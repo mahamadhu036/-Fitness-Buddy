@@ -96,7 +96,8 @@
             <div class="welcome-avatar">🤖</div>
             <h2>Hey there, I'm Buddy! 👋</h2>
             <p>Your personal AI fitness coach. Tell me your age, weight, height, and goal — I'll create a plan
-              <strong>just for you</strong>!</p>
+              <strong>just for you</strong>!
+            </p>
             <p style="margin-top:12px;font-size:0.82rem;color:var(--text-muted)">💡 Tip: Complete your profile (👤 top
               right) for fully personalized advice</p>
           </div>
@@ -633,29 +634,6 @@
   <script src="/js/agent.js"></script>
   <script src="/js/achievements.js"></script>
   <script src="/js/app.js"></script>
-
-  <!-- Watson Orchestrate Agent (au-syd) -->
-  <script>
-    window.wxOConfiguration = {
-      orchestrationID: "daaa4cd98c8149d69b2fcb2bbadbc2ba_b26ce60c-59b6-49d9-8f60-8c4c7b99d45e",
-      hostURL: "https://au-syd.watson-orchestrate.cloud.ibm.com",
-      rootElementID: "root",
-      deploymentPlatform: "ibmcloud",
-      crn: "crn:v1:bluemix:public:watsonx-orchestrate:au-syd:a/daaa4cd98c8149d69b2fcb2bbadbc2ba:b26ce60c-59b6-49d9-8f60-8c4c7b99d45e::",
-      chatOptions: {
-        agentId: "5a195db2-3a7e-42b4-a337-fe99cf752f3c",
-        agentEnvironmentId: "623843ba-76bd-4609-986f-bc3ffeee1537"
-      }
-    };
-    setTimeout(function () {
-      const script = document.createElement('script');
-      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
-      script.addEventListener('load', function () {
-        wxoLoader.init();
-      });
-      document.head.appendChild(script);
-    }, 0);
-  </script>
 
 </body>
 
