@@ -7,7 +7,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 
-const chatRoutes = require('./routes/chat.routes');
+const chatRoutes  = require('./routes/chat.routes');
+const agentRoutes = require('./routes/agent.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // API routes
 app.use('/api', chatRoutes);
+app.use('/api/agent', agentRoutes);
 
 // Fallback to index.html for SPA routing
 app.get('*', (req, res) => {

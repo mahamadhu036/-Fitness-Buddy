@@ -1,11 +1,89 @@
 /**
- * Fitness Buddy — Main App Controller
- * Navigation, chat, profile, particles, toast, markdown rendering
+ * Fitness Buddy — Main App Controller v2
+ * Navigation, chat, profile with BMI/TDEE, particles, toast, markdown
  */
 
 'use strict';
 
-// ── Profile ────────────────────────────────────────────
+// ── BMI & TDEE Calculations ────────────────────────────────────────────
+function calculateBMI(weight, height) {
+  if (!weight || !height || height === 0) return null;
+  const h = height / 100; // cm → m
+  const bmi = weight / (h * h);
+  return Math.round(bmi * 10) / 10;
+}
+
+function getBMICategory(bmi) {
+  if (bmi < 18.5) return 'Underweight';
+  if (bmi < 25)   return 'Normal weight';
+  if (bmi < 30)   return 'Overweight';
+  return 'Obese';
+}
+
+/**
+ * Mifflin-St Jeor formula for TDEE estimation
+ * activityLevel: 1.2 (sedentary) → 1.725 (very active)
+ */
+function calculateTDEE(age, gender, weight, height, activityLevel = 1.375) {
+  if (!age || !weight || !height) return null;
+  // BMR
+  let bmr;
+  if (gender === 'female') {
+    bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+  } else {
+    bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+  }
+  return Math.round(bmr * activityLevel);
+}
+
+function computeBMI() {
+  const weight = parseFloat(document.getElementById('prof-weight')?.value);
+  const height = parseFloat(document.getElementById('prof-height')?.value);
+  const age    = parseFloat(document.getElementById('prof-age')?.value);
+  const gender = document.getElementById('prof-gender')?.value || 'male';
+
+  const banner = document.getElementById('bmi-banner');
+
+  if (weight && height) {
+    const bmi  = calculateBMI(weight, height);
+    const tdee = calculateTDEE(age, gender, weight, height);
+    const cat  = getBMICategory(bmi);
+
+    if (banner) banner.style.display = 'flex';
+
+    const bmiEl  = document.getElementById('bmi-display-val');
+    const tdeeEl = document.getElementById('tdee-display-val');
+    const catEl  = document.getElementById('bmi-category-text');
+
+    if (bmiEl)  bmiEl.textContent  = bmi;
+    if (tdeeEl) tdeeEl.textContent = tdee ? tdee.toLocaleString() : '—';
+    if (catEl)  catEl.textContent  = cat;
+
+    // Color the BMI category
+    if (catEl) {
+      catEl.style.color =
+        cat === 'Normal weight' ? 'var(--green)' :
+        cat === 'Underweight'   ? 'var(--blue-primary)' :
+        cat === 'Overweight'    ? 'var(--yellow)' :
+        'var(--coral)';
+    }
+
+    // Auto-set calorie goal if not manually set
+    if (tdee) {
+      const goalInput = document.getElementById('prof-calorie-goal');
+      if (goalInput && !goalInput.dataset.manuallySet) {
+        const goal = document.getElementById('prof-goal')?.value || 'stay active';
+        const adj = goal === 'weight loss' ? tdee - 400 :
+                    goal === 'muscle gain' ? tdee + 300 : tdee;
+        goalInput.value = adj;
+      }
+    }
+  } else {
+    if (banner) banner.style.display = 'none';
+  }
+}
+
+// ── Profile ────────────────────────────────────────────────────────────
 function getProfile() {
   try {
     return JSON.parse(localStorage.getItem('fb_profile') || '{}');
@@ -13,14 +91,36 @@ function getProfile() {
 }
 
 function saveProfile() {
+  const weight = parseFloat(document.getElementById('prof-weight')?.value) || null;
+  const height = parseFloat(document.getElementById('prof-height')?.value) || null;
+  const age    = parseFloat(document.getElementById('prof-age')?.value)    || null;
+  const gender = document.getElementById('prof-gender')?.value || 'male';
+  const name   = (document.getElementById('prof-name')?.value || '').trim();
+
+  const bmi  = calculateBMI(weight, height);
+  const tdee = calculateTDEE(age, gender, weight, height);
+
   const profile = {
-    fitnessLevel: document.getElementById('prof-level').value,
-    goals:        document.getElementById('prof-goal').value,
-    equipment:    document.getElementById('prof-equipment').value,
-    diet:         document.getElementById('prof-diet').value,
-    calorieGoal:  parseInt(document.getElementById('prof-calorie-goal').value) || 2000,
+    name,
+    age,
+    gender,
+    weight,
+    height,
+    bmi,
+    bmiCategory: bmi ? getBMICategory(bmi) : null,
+    tdee,
+    fitnessLevel:      document.getElementById('prof-level')?.value || 'beginner',
+    goals:             document.getElementById('prof-goal')?.value  || 'stay active',
+    equipment:         document.getElementById('prof-equipment')?.value || 'no equipment',
+    diet:              document.getElementById('prof-diet')?.value  || 'no preference',
+    medicalConditions: document.getElementById('prof-medical')?.value || '',
+    calorieGoal:       parseInt(document.getElementById('prof-calorie-goal')?.value) || tdee || 2000,
   };
+
   localStorage.setItem('fb_profile', JSON.stringify(profile));
+
+  // Store BMI separately for achievement check
+  if (bmi) localStorage.setItem('fb_bmi', bmi.toString());
 
   // Apply calorie goal
   if (typeof CalTracker !== 'undefined') {
@@ -31,18 +131,48 @@ function saveProfile() {
     if (goalInput) goalInput.value = profile.calorieGoal;
   }
 
+  // Update greeting with user name
+  updateWelcomeGreeting(name);
+
   closeProfileModal();
-  showToast('✅ Profile saved! Buddy will personalize advice for you.', 'success');
+  const nameGreet = name ? `, ${name}` : '';
+  showToast(`✅ Profile saved${nameGreet}! BMI: ${bmi || '—'} · TDEE: ${tdee ? tdee + ' kcal' : '—'}`, 'success');
+
+  // Regenerate weekly plan when profile changes
+  if (typeof generateWeeklyPlan === 'function') {
+    setTimeout(() => generateWeeklyPlan(true), 500);
+  }
+
+  // Check achievements
+  if (typeof checkAchievements === 'function') {
+    setTimeout(() => {
+      const newly = checkAchievements();
+      if (newly.length && typeof renderAchievements === 'function') renderAchievements();
+    }, 600);
+  }
 }
 
 function loadProfileIntoModal() {
   const p = getProfile();
-  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
-  set('prof-level', p.fitnessLevel);
-  set('prof-goal', p.goals);
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val !== null && val !== undefined) el.value = val; };
+
+  set('prof-name',  p.name);
+  set('prof-age',    p.age);
+  set('prof-gender', p.gender);
+  set('prof-height', p.height);
+  set('prof-weight', p.weight);
+  set('prof-level',  p.fitnessLevel);
+  set('prof-goal',   p.goals);
   set('prof-equipment', p.equipment);
-  set('prof-diet', p.diet);
-  if (p.calorieGoal) document.getElementById('prof-calorie-goal').value = p.calorieGoal;
+  set('prof-diet',   p.diet);
+  set('prof-medical', p.medicalConditions);
+  if (p.calorieGoal) {
+    const cg = document.getElementById('prof-calorie-goal');
+    if (cg) { cg.value = p.calorieGoal; cg.dataset.manuallySet = 'true'; }
+  }
+
+  // Re-compute BMI display
+  computeBMI();
 }
 
 function openProfileModal() {
@@ -59,33 +189,38 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('profile-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeProfileModal();
   });
+  // Allow manual override of calorie goal
+  const cgInput = document.getElementById('prof-calorie-goal');
+  if (cgInput) cgInput.addEventListener('input', () => { cgInput.dataset.manuallySet = 'true'; });
 });
 
-// ── Navigation ────────────────────────────────────────
+// ── Navigation ────────────────────────────────────────────────────────
 function navigate(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
   const viewEl = document.getElementById(`view-${view}`);
-  const navEl = document.getElementById(`nav-${view}`);
+  const navEl  = document.getElementById(`nav-${view}`);
 
   if (viewEl) viewEl.classList.add('active');
-  if (navEl) navEl.classList.add('active');
+  if (navEl)  navEl.classList.add('active');
 
   if (view === 'dashboard') {
     updateDashboardStats();
+    if (typeof initAgent === 'function') initAgent();
+    if (typeof renderAchievements === 'function') renderAchievements();
   }
   if (view === 'calories') {
     updateCalorieUI();
   }
 }
 
-// ── Chat ─────────────────────────────────────────────
+// ── Chat ─────────────────────────────────────────────────────────────
 const chatHistory = [];
 
 async function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
+  const input  = document.getElementById('chat-input');
+  const msg    = input.value.trim();
   if (!msg) return;
 
   input.value = '';
@@ -98,11 +233,8 @@ async function sendMessage() {
   // Show user message
   appendMessage('user', msg);
 
-  // Disable send
   const sendBtn = document.getElementById('send-btn');
   sendBtn.disabled = true;
-
-  // Show typing indicator
   const typingId = showTyping();
 
   try {
@@ -122,12 +254,15 @@ async function sendMessage() {
 
     if (data.success) {
       appendMessage('ai', data.reply);
-      chatHistory.push({ role: 'user', content: msg });
+      chatHistory.push({ role: 'user',      content: msg });
       chatHistory.push({ role: 'assistant', content: data.reply });
 
       // Increment chat count
       const count = parseInt(localStorage.getItem('fb_chat_count') || '0') + 1;
       localStorage.setItem('fb_chat_count', count);
+
+      // Check achievements
+      if (typeof checkAchievements === 'function') checkAchievements();
     } else {
       appendMessage('ai', '⚠️ Sorry, I had trouble with that. Could you try rephrasing your question?');
     }
@@ -148,6 +283,79 @@ function sendQuick(message) {
   setTimeout(sendMessage, 100);
 }
 
+// ── Chat Toolbar Actions ──────────────────────────────────────────────
+function clearChat() {
+  const btn = document.querySelector('.chat-tool-btn.delete');
+
+  // Two-click pattern: first click asks "Sure?", second click clears
+  if (btn && btn.dataset.confirming !== 'true') {
+    btn.dataset.confirming = 'true';
+    btn.style.borderColor = 'var(--coral)';
+    btn.style.color = 'var(--coral)';
+    btn.style.background = 'rgba(255,107,53,0.12)';
+    btn.innerHTML = '⚠️ <span>Sure?</span>';
+
+    // Auto-cancel after 3s if not clicked again
+    setTimeout(() => {
+      if (btn.dataset.confirming === 'true') {
+        btn.dataset.confirming = '';
+        btn.style.cssText = '';
+        btn.innerHTML = '🗑️ <span>Clear</span>';
+      }
+    }, 3000);
+    return;
+  }
+
+  // Second click — do the clear
+  if (btn) {
+    btn.dataset.confirming = '';
+    btn.style.cssText = '';
+    btn.innerHTML = '🗑️ <span>Clear</span>';
+  }
+
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+
+  // Re-show welcome banner with personalised name
+  const profile = getProfile();
+  const name = profile.name || '';
+  const banner = document.createElement('div');
+  banner.className = 'welcome-banner';
+  banner.id = 'welcome-banner';
+  banner.innerHTML = `
+    <div class="welcome-avatar">🤖</div>
+    <h2>${name ? 'Hey ' + name + ", I'm Buddy! 👋" : "Hey there, I'm Buddy! 👋"}</h2>
+    <p>Your personal AI fitness coach. Tell me your age, weight, height, and goal — I'll create a plan <strong>just for you</strong>!</p>
+    <p style="margin-top:12px;font-size:0.82rem;color:var(--text-muted)">💡 Tip: Complete your profile (👤 top right) for fully personalized advice</p>
+  `;
+  container.appendChild(banner);
+
+  // Clear history array
+  chatHistory.length = 0;
+
+  showToast('🗑️ Chat cleared!', 'info');
+}
+
+function refreshChat() {
+  const container = document.getElementById('chat-messages');
+  const banner = document.getElementById('welcome-banner');
+
+  // Animate the container
+  container.style.opacity = '0';
+  container.style.transition = 'opacity 0.3s ease';
+
+  setTimeout(() => {
+    // Update welcome banner name if profile was updated
+    const profile = getProfile();
+    if (banner) {
+      const h2 = banner.querySelector('h2');
+      if (h2 && profile.name) h2.textContent = `Hey ${profile.name}, I'm Buddy! 👋`;
+    }
+    container.style.opacity = '1';
+    showToast('🔄 Chat refreshed!', 'info');
+  }, 300);
+}
+
 function appendMessage(role, content) {
   const container = document.getElementById('chat-messages');
   const div = document.createElement('div');
@@ -165,7 +373,7 @@ function appendMessage(role, content) {
 
 function showTyping() {
   const container = document.getElementById('chat-messages');
-  const id = 'typing-' + Date.now();
+  const id  = 'typing-' + Date.now();
   const div = document.createElement('div');
   div.className = 'typing-indicator';
   div.id = id;
@@ -195,15 +403,15 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-// ── Markdown Renderer ─────────────────────────────────
+// ── Markdown Renderer ─────────────────────────────────────────────────
 function renderMarkdown(text) {
   if (!text) return '';
   let html = String(text);
 
-  // Escape HTML first (to prevent XSS)
+  // Escape HTML first (XSS prevention)
   html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  // Code blocks (before other processing)
+  // Code blocks
   html = html.replace(/```[\s\S]*?```/g, m => {
     const code = m.slice(3, -3).replace(/^\w+\n/, '');
     return `<pre><code>${code}</code></pre>`;
@@ -214,12 +422,12 @@ function renderMarkdown(text) {
 
   // Headings
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  html = html.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
 
   // Bold / italic
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/\*(.+?)\*/g,     '<em>$1</em>');
 
   // Tables
   html = html.replace(/((?:\|.+\|\n?)+)/g, (match) => {
@@ -254,16 +462,16 @@ function renderMarkdown(text) {
     return `<ol>${items}</ol>`;
   });
 
-  // Paragraphs — wrap remaining lines
+  // Paragraphs
   html = html.replace(/^(?!<[houptbl]|<\/|```)(.*\S.*)$/gm, (m) => `<p>${m}</p>`);
 
-  // Clean up blank lines between block elements
+  // Clean up blank lines
   html = html.replace(/\n\n+/g, '\n');
 
   return html;
 }
 
-// ── Toast Notifications ───────────────────────────────
+// ── Toast Notifications ───────────────────────────────────────────────
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -276,10 +484,10 @@ function showToast(message, type = 'info') {
     toast.style.transform = 'translateX(20px)';
     toast.style.transition = '0.3s ease';
     setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  }, 3500);
 }
 
-// ── Particles ─────────────────────────────────────────
+// ── Particles ─────────────────────────────────────────────────────────
 function initParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
@@ -301,7 +509,7 @@ function initParticles() {
   }
 }
 
-// ── Utility ───────────────────────────────────────────
+// ── Utility ───────────────────────────────────────────────────────────
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -310,13 +518,39 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// ── App Init ──────────────────────────────────────────
+// ── Weekly Chart Refresh ─────────────────────────────────────────────
+function refreshWeeklyChart() {
+  const btn = document.querySelector('[onclick="refreshWeeklyChart()"]');
+  if (btn) {
+    btn.textContent = '⏳ Loading...';
+    btn.disabled = true;
+  }
+  setTimeout(() => {
+    if (typeof renderWeekChart === 'function') renderWeekChart();
+    if (typeof updateCalorieUI === 'function') updateCalorieUI();
+    if (btn) {
+      btn.textContent = '🔄 Refresh';
+      btn.disabled = false;
+    }
+    if (typeof showToast === 'function') showToast('📈 Chart refreshed!', 'info');
+  }, 350);
+}
+
+// ── Welcome Greeting ─────────────────────────────────────────────────
+function updateWelcomeGreeting(name) {
+  const banner = document.getElementById('welcome-banner');
+  if (!banner) return;
+  const h2 = banner.querySelector('h2');
+  if (h2) h2.textContent = name ? `Hey ${name}, I'm Buddy! 👋` : `Hey there, I'm Buddy! 👋`;
+}
+
+// ── App Init ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize all modules
   initParticles();
   initCalorieTracker();
   initWorkoutPlanner();
   initDashboard();
+  if (typeof initAchievements === 'function') initAchievements();
 
   // Apply profile calorie goal on load
   const profile = getProfile();
@@ -327,9 +561,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof updateCalorieUI === 'function') updateCalorieUI();
   }
 
+  // Greet returning user by name
+  if (profile.name) updateWelcomeGreeting(profile.name);
+
   // Show profile modal on first visit
   if (!localStorage.getItem('fb_profile')) {
-    setTimeout(openProfileModal, 1000);
+    setTimeout(openProfileModal, 1200);
   }
 
   // Update streak on daily visit
@@ -339,5 +576,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatInput = document.getElementById('chat-input');
   if (chatInput) chatInput.focus();
 
-  console.log('🏋️ Fitness Buddy initialized!');
+  console.log('🏋️ Fitness Buddy v2 initialized!');
 });

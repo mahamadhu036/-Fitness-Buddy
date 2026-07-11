@@ -1,427 +1,641 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fitness Buddy — Your AI Health & Fitness Coach</title>
-  <meta name="description" content="Fitness Buddy is your personal AI-powered fitness coach. Get custom workouts, nutrition plans, calorie tracking, daily motivation, and healthy lifestyle guidance — all for free." />
-  <meta name="keywords" content="fitness coach, AI workout, calorie tracker, nutrition guide, home workout, health app" />
+  <title>Fitness Buddy — Your AI Health &amp; Fitness Coach</title>
+  <meta name="description"
+    content="Fitness Buddy is your personal AI-powered fitness coach. Get custom workouts, nutrition plans, calorie tracking, BMI calculator, daily motivation, and healthy lifestyle guidance — all for free." />
+  <meta name="keywords"
+    content="fitness coach, AI workout, calorie tracker, nutrition guide, home workout, health app, BMI calculator, TDEE" />
   <meta property="og:title" content="Fitness Buddy — AI Fitness Coach" />
-  <meta property="og:description" content="Your personal AI health and fitness companion. Workouts, nutrition, calorie tracking, and daily motivation." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>" />
+  <meta property="og:description"
+    content="Your personal AI health and fitness companion. Workouts, nutrition, calorie tracking, BMI, and daily motivation." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
+
 <body>
 
-<!-- Animated background -->
-<div class="bg-animated"></div>
-<div class="particles" id="particles"></div>
+  <!-- Animated background -->
+  <div class="bg-animated"></div>
+  <div class="particles" id="particles"></div>
 
-<!-- ════════════ APP WRAPPER ════════════ -->
-<div class="app-wrapper">
+  <!-- ════════════ APP WRAPPER ════════════ -->
+  <div class="app-wrapper">
 
-  <!-- Header -->
-  <header class="app-header">
-    <div class="logo-mark">
-      <div class="logo-icon">🏋️</div>
-      <span class="logo-text">Fitness Buddy</span>
-    </div>
-
-    <nav class="header-nav">
-      <button class="nav-btn active" id="nav-chat" onclick="navigate('chat')">
-        <span>💬</span><span>Chat</span>
-      </button>
-      <button class="nav-btn" id="nav-calories" onclick="navigate('calories')">
-        <span>🔥</span><span>Calories</span>
-      </button>
-      <button class="nav-btn" id="nav-workout" onclick="navigate('workout')">
-        <span>💪</span><span>Workout</span>
-      </button>
-      <button class="nav-btn" id="nav-dashboard" onclick="navigate('dashboard')">
-        <span>📊</span><span>Dashboard</span>
-      </button>
-    </nav>
-
-    <button class="profile-btn" id="profile-btn" onclick="openProfileModal()" title="Edit Profile">
-      👤
-    </button>
-  </header>
-
-  <!-- Main Content -->
-  <main class="main-content">
-
-    <!-- ══ CHAT VIEW ══ -->
-    <section class="view active" id="view-chat">
-      <!-- Quick action chips -->
-      <div class="quick-actions">
-        <button class="quick-chip" onclick="sendQuick('Give me a beginner home workout routine')">🏠 Home Workout</button>
-        <button class="quick-chip coral" onclick="sendQuick('Suggest a healthy meal plan for weight loss')">🥗 Meal Plan</button>
-        <button class="quick-chip green" onclick="sendQuick('I need motivation to stay consistent with fitness')">💪 Motivate Me</button>
-        <button class="quick-chip purple" onclick="sendQuick('How many calories should I eat per day?')">🔥 Calorie Guide</button>
-        <button class="quick-chip yellow" onclick="sendQuick('What should I eat before and after workout?')">⚡ Pre/Post Fuel</button>
-        <button class="quick-chip" onclick="sendQuick('How do I recover properly after intense exercise?')">😴 Recovery</button>
-        <button class="quick-chip coral" onclick="sendQuick('Help me set realistic fitness goals for 8 weeks')">🎯 Set Goals</button>
-        <button class="quick-chip green" onclick="sendQuick('How much water should I drink daily for fitness?')">💧 Hydration</button>
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-mark">
+        <div class="logo-icon">🏋️</div>
+        <span class="logo-text">Fitness Buddy</span>
       </div>
 
-      <!-- Messages -->
-      <div class="chat-messages" id="chat-messages">
-        <div class="welcome-banner" id="welcome-banner">
-          <div class="welcome-avatar">🤖</div>
-          <h2>Hey there, I'm Buddy! 👋</h2>
-          <p>Your personal AI fitness coach. Ask me about workouts, nutrition, calorie targets, or daily motivation — I'm here to help you crush your goals!</p>
+      <nav class="header-nav">
+        <button class="nav-btn active" id="nav-chat" onclick="navigate('chat')">
+          <span>💬</span><span>Chat</span>
+        </button>
+        <button class="nav-btn" id="nav-calories" onclick="navigate('calories')">
+          <span>🔥</span><span>Calories</span>
+        </button>
+        <button class="nav-btn" id="nav-workout" onclick="navigate('workout')">
+          <span>💪</span><span>Workout</span>
+        </button>
+        <button class="nav-btn" id="nav-dashboard" onclick="navigate('dashboard')">
+          <span>📊</span><span>Dashboard</span>
+        </button>
+      </nav>
+
+      <button class="profile-btn" id="profile-btn" onclick="openProfileModal()" title="Edit Profile">
+        👤
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ══ CHAT VIEW ══ -->
+      <section class="view active" id="view-chat">
+        <!-- Quick action chips -->
+        <div class="quick-actions">
+          <button class="quick-chip" onclick="sendQuick('Give me a personalized muscle building workout')">💪 Build
+            Muscle</button>
+          <button class="quick-chip coral" onclick="sendQuick('Create a weight loss workout and diet plan for me')">🔥
+            Lose Weight</button>
+          <button class="quick-chip green" onclick="sendQuick('Give me a cardio fitness plan')">🏃 Cardio Plan</button>
+          <button class="quick-chip purple" onclick="sendQuick('Suggest a healthy meal plan for my goal')">🥗 Healthy
+            Diet</button>
+          <button class="quick-chip yellow" onclick="sendQuick('How do I recover properly after exercise?')">😴 Recovery
+            Tips</button>
+          <button class="quick-chip" onclick="sendQuick('How much water should I drink daily for fitness?')">💧
+            Hydration</button>
+          <button class="quick-chip coral" onclick="sendQuick('Give me a yoga and stretching routine')">🧘
+            Stretching</button>
+          <button class="quick-chip green" onclick="sendQuick('Calculate my BMI and daily calorie needs')">📊 BMI &amp;
+            Calories</button>
         </div>
-      </div>
 
-      <!-- Input -->
-      <div class="chat-input-area">
-        <div class="input-row">
-          <textarea
-            id="chat-input"
-            placeholder="Ask me anything about fitness, nutrition, or wellness..."
-            rows="1"
-            onkeydown="handleInputKey(event)"
-            oninput="autoResize(this)"
-          ></textarea>
-          <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send message">
-            ➤
+        <!-- Chat toolbar -->
+        <div class="chat-toolbar">
+          <span class="chat-toolbar-title">💬 Chat with Buddy</span>
+          <div class="chat-toolbar-actions">
+            <button class="chat-tool-btn refresh" onclick="refreshChat()" title="Refresh chat">
+              🔄 <span>Refresh</span>
+            </button>
+            <button class="chat-tool-btn delete" onclick="clearChat()" title="Clear all messages">
+              🗑️ <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chat-messages">
+          <div class="welcome-banner" id="welcome-banner">
+            <div class="welcome-avatar">🤖</div>
+            <h2>Hey there, I'm Buddy! 👋</h2>
+            <p>Your personal AI fitness coach. Tell me your age, weight, height, and goal — I'll create a plan
+              <strong>just for you</strong>!</p>
+            <p style="margin-top:12px;font-size:0.82rem;color:var(--text-muted)">💡 Tip: Complete your profile (👤 top
+              right) for fully personalized advice</p>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+          <div class="input-row">
+            <textarea id="chat-input" placeholder="e.g. 'I'm 25, 75kg, beginner, want to lose 5kg with dumbbells'"
+              rows="1" onkeydown="handleInputKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send message">
+              ➤
+            </button>
+          </div>
+          <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+        </div>
+      </section>
+
+      <!-- ══ CALORIES VIEW ══ -->
+      <section class="view" id="view-calories">
+        <div class="page-header">
+          <h1>🔥 Daily Calorie Tracker</h1>
+          <p>Track your nutrition and hit your daily calorie targets</p>
+        </div>
+
+        <!-- Goal setter -->
+        <div class="cal-goal-row">
+          <label for="calorie-goal-input">Daily Goal</label>
+          <input type="number" id="calorie-goal-input" min="800" max="5000" step="50" placeholder="2000" />
+          <select id="goal-preset" onchange="applyGoalPreset()">
+            <option value="">Quick presets...</option>
+            <option value="1400">Weight Loss Light (1400)</option>
+            <option value="1600">Weight Loss (1600)</option>
+            <option value="1800">Maintenance Light (1800)</option>
+            <option value="2000">Maintenance (2000)</option>
+            <option value="2400">Muscle Gain (2400)</option>
+            <option value="2800">Bulk (2800)</option>
+            <option value="3200">Heavy Bulk (3200)</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="updateCalorieGoal()">Set Goal</button>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="cal-summary">
+          <div class="cal-card goal">
+            <div class="cal-card-icon">🎯</div>
+            <div class="cal-card-value" id="goal-display">2000</div>
+            <div class="cal-card-label">Daily Goal</div>
+          </div>
+          <div class="cal-card consumed">
+            <div class="cal-card-icon">🍽️</div>
+            <div class="cal-card-value" id="consumed-display">0</div>
+            <div class="cal-card-label">Consumed</div>
+          </div>
+          <div class="cal-card remaining">
+            <div class="cal-card-icon">⚡</div>
+            <div class="cal-card-value" id="remaining-display">2000</div>
+            <div class="cal-card-label">Remaining</div>
+          </div>
+        </div>
+
+        <!-- Progress ring + macros -->
+        <div class="progress-ring-wrap">
+          <div class="ring-container">
+            <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
+              <defs>
+                <linearGradient id="cal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#4f8ef7" />
+                  <stop offset="100%" style="stop-color:#ff6b35" />
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="70" cy="70" r="56" />
+              <circle class="ring-fill" id="cal-ring" cx="70" cy="70" r="56" stroke-dasharray="351.86"
+                stroke-dashoffset="351.86" />
+            </svg>
+            <div class="ring-label">
+              <span class="ring-pct" id="ring-pct">0%</span>
+              <span class="ring-sub">of goal</span>
+            </div>
+          </div>
+
+          <div class="macros-breakdown">
+            <h3>📊 Macronutrients</h3>
+            <div class="macro-row">
+              <span class="macro-label">Protein</span>
+              <div class="macro-bar-wrap">
+                <div class="macro-bar protein" id="protein-bar" style="width:0%"></div>
+              </div>
+              <span class="macro-val" id="protein-val">0 / 150g</span>
+            </div>
+            <div class="macro-row">
+              <span class="macro-label">Carbs</span>
+              <div class="macro-bar-wrap">
+                <div class="macro-bar carbs" id="carbs-bar" style="width:0%"></div>
+              </div>
+              <span class="macro-val" id="carbs-val">0 / 200g</span>
+            </div>
+            <div class="macro-row">
+              <span class="macro-label">Fat</span>
+              <div class="macro-bar-wrap">
+                <div class="macro-bar fat" id="fat-bar" style="width:0%"></div>
+              </div>
+              <span class="macro-val" id="fat-val">0 / 65g</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Food -->
+        <div class="section-card">
+          <h3>➕ Add Food Entry</h3>
+
+          <!-- Quick-add common foods -->
+          <p class="text-sm text-secondary mb-8">Quick add common foods:</p>
+          <div class="quick-foods mb-16" id="quick-foods-list"></div>
+
+          <div class="divider"></div>
+
+          <!-- Manual entry -->
+          <div class="add-food-grid mt-8">
+            <input type="text" id="food-name" placeholder="Food name (e.g. Chicken breast)" />
+            <input type="number" id="food-calories" placeholder="Calories" min="0" max="9999" />
+            <select id="food-meal">
+              <option value="breakfast">🌅 Breakfast</option>
+              <option value="lunch">☀️ Lunch</option>
+              <option value="dinner" selected>🌙 Dinner</option>
+              <option value="snack">🍎 Snack</option>
+            </select>
+          </div>
+          <div class="macro-inputs">
+            <div class="macro-input-wrap">
+              <input type="number" id="food-protein" placeholder="Protein" min="0" max="500" />
+              <span class="unit">g</span>
+            </div>
+            <div class="macro-input-wrap">
+              <input type="number" id="food-carbs" placeholder="Carbs" min="0" max="999" />
+              <span class="unit">g</span>
+            </div>
+            <div class="macro-input-wrap">
+              <input type="number" id="food-fat" placeholder="Fat" min="0" max="500" />
+              <span class="unit">g</span>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <button class="btn btn-green btn-sm" id="add-food-btn" onclick="addFoodEntry()">➕ Add to Log</button>
+            <button class="btn btn-outline btn-sm" onclick="clearFoodForm()">✕ Clear</button>
+            <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="askAIForCalories()">🤖 Ask
+              AI</button>
+          </div>
+        </div>
+
+        <!-- Food Log -->
+        <div class="section-card">
+          <div class="flex-between mb-16">
+            <h3>📋 Today's Food Log</h3>
+            <button class="btn btn-outline btn-sm" onclick="clearFoodLog()">🗑️ Clear Day</button>
+          </div>
+          <div id="food-log-container">
+            <div class="empty-log">
+              <div style="font-size:2.5rem;margin-bottom:8px">🍽️</div>
+              <p>No meals logged yet today.</p>
+              <p class="text-sm text-muted mt-8">Add your first meal above to start tracking!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ WORKOUT VIEW ══ -->
+      <section class="view" id="view-workout">
+        <div class="page-header">
+          <h1>💪 Workout Planner</h1>
+          <p>Generate personalized workout routines powered by AI</p>
+        </div>
+
+        <div class="workout-generator">
+          <h2>⚙️ Generate Your Workout</h2>
+          <div class="workout-options">
+            <div>
+              <label for="wk-level">Fitness Level</label>
+              <select id="wk-level">
+                <option value="beginner">🌱 Beginner</option>
+                <option value="intermediate">⚡ Intermediate</option>
+                <option value="advanced">🔥 Advanced</option>
+              </select>
+            </div>
+            <div>
+              <label for="wk-type">Workout Type</label>
+              <select id="wk-type">
+                <option value="home">🏠 Home (No Equipment)</option>
+                <option value="cardio">🏃 Cardio</option>
+                <option value="strength">🏋️ Strength</option>
+                <option value="hiit">⚡ HIIT</option>
+                <option value="yoga">🧘 Yoga / Flexibility</option>
+              </select>
+            </div>
+            <div>
+              <label for="wk-duration">Duration</label>
+              <select id="wk-duration">
+                <option value="20">20 minutes</option>
+                <option value="30" selected>30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">60 minutes</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="gen-workout-btn" onclick="generateWorkout()">
+            ⚡ Generate Workout
           </button>
+          <div id="workout-result" class="workout-result hidden"></div>
         </div>
-        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
-      </div>
-    </section>
 
-    <!-- ══ CALORIES VIEW ══ -->
-    <section class="view" id="view-calories">
-      <div class="page-header">
-        <h1>🔥 Daily Calorie Tracker</h1>
-        <p>Track your nutrition and hit your daily calorie targets</p>
-      </div>
-
-      <!-- Goal setter -->
-      <div class="cal-goal-row">
-        <label for="calorie-goal-input">Daily Goal</label>
-        <input type="number" id="calorie-goal-input" min="800" max="5000" step="50" placeholder="2000" />
-        <select id="goal-preset" onchange="applyGoalPreset()">
-          <option value="">Quick presets...</option>
-          <option value="1400">Weight Loss Light (1400)</option>
-          <option value="1600">Weight Loss (1600)</option>
-          <option value="1800">Maintenance Light (1800)</option>
-          <option value="2000">Maintenance (2000)</option>
-          <option value="2400">Muscle Gain (2400)</option>
-          <option value="2800">Bulk (2800)</option>
-          <option value="3200">Heavy Bulk (3200)</option>
-        </select>
-        <button class="btn btn-primary btn-sm" onclick="updateCalorieGoal()">Set Goal</button>
-      </div>
-
-      <!-- Summary cards -->
-      <div class="cal-summary">
-        <div class="cal-card goal">
-          <div class="cal-card-icon">🎯</div>
-          <div class="cal-card-value" id="goal-display">2000</div>
-          <div class="cal-card-label">Daily Goal</div>
+        <!-- Workout history -->
+        <div class="section-card">
+          <div class="flex-between mb-16">
+            <h3>📅 Workout History</h3>
+            <button class="btn btn-outline btn-sm" onclick="logWorkout()">✅ Log Today's Workout</button>
+          </div>
+          <div class="workout-history" id="workout-history">
+            <div class="empty-log">
+              <div style="font-size:2.5rem;margin-bottom:8px">🏃</div>
+              <p>No workouts logged yet.</p>
+              <p class="text-sm text-muted mt-8">Generate a workout above and log it after completion!</p>
+            </div>
+          </div>
         </div>
-        <div class="cal-card consumed">
-          <div class="cal-card-icon">🍽️</div>
-          <div class="cal-card-value" id="consumed-display">0</div>
-          <div class="cal-card-label">Consumed</div>
-        </div>
-        <div class="cal-card remaining">
-          <div class="cal-card-icon">⚡</div>
-          <div class="cal-card-value" id="remaining-display">2000</div>
-          <div class="cal-card-label">Remaining</div>
-        </div>
-      </div>
+      </section>
 
-      <!-- Progress ring + macros -->
-      <div class="progress-ring-wrap">
-        <div class="ring-container">
-          <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
-            <defs>
-              <linearGradient id="cal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#4f8ef7"/>
-                <stop offset="100%" style="stop-color:#ff6b35"/>
-              </linearGradient>
-            </defs>
-            <circle class="ring-bg" cx="70" cy="70" r="56"/>
-            <circle class="ring-fill" id="cal-ring" cx="70" cy="70" r="56"
-              stroke-dasharray="351.86"
-              stroke-dashoffset="351.86"/>
-          </svg>
-          <div class="ring-label">
-            <span class="ring-pct" id="ring-pct">0%</span>
-            <span class="ring-sub">of goal</span>
+      <!-- ══ DASHBOARD VIEW ══ -->
+      <section class="view" id="view-dashboard">
+        <div class="page-header">
+          <h1>📊 Progress Dashboard</h1>
+          <p>Your fitness journey at a glance</p>
+        </div>
+
+        <!-- ── Circular Stats Row ── -->
+        <div class="circular-stats-row">
+          <div class="circ-stat-card">
+            <div class="circ-ring-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90" class="circ-svg">
+                <defs>
+                  <linearGradient id="ring-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4f8ef7" />
+                    <stop offset="100%" style="stop-color:#9b5de5" />
+                  </linearGradient>
+                </defs>
+                <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" />
+                <circle cx="45" cy="45" r="36" fill="none" stroke="url(#ring-blue)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" id="ring-workouts"
+                  style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s ease" />
+              </svg>
+              <div class="circ-ring-label">
+                <span class="circ-val" id="circ-workouts">0</span>
+                <span class="circ-sub">/ 5</span>
+              </div>
+            </div>
+            <div class="circ-title">💪 Workouts</div>
+            <div class="circ-desc">This week</div>
+          </div>
+
+          <div class="circ-stat-card">
+            <div class="circ-ring-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90" class="circ-svg">
+                <defs>
+                  <linearGradient id="ring-coral" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff6b35" />
+                    <stop offset="100%" style="stop-color:#f9c74f" />
+                  </linearGradient>
+                </defs>
+                <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" />
+                <circle cx="45" cy="45" r="36" fill="none" stroke="url(#ring-coral)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" id="ring-calories"
+                  style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s ease" />
+              </svg>
+              <div class="circ-ring-label">
+                <span class="circ-val" id="circ-calories">0</span>
+                <span class="circ-sub">kcal</span>
+              </div>
+            </div>
+            <div class="circ-title">🔥 Calories</div>
+            <div class="circ-desc">Today</div>
+          </div>
+
+          <div class="circ-stat-card">
+            <div class="circ-ring-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90" class="circ-svg">
+                <defs>
+                  <linearGradient id="ring-water" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4f8ef7" />
+                    <stop offset="100%" style="stop-color:#22d97e" />
+                  </linearGradient>
+                </defs>
+                <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" />
+                <circle cx="45" cy="45" r="36" fill="none" stroke="url(#ring-water)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" id="ring-water"
+                  style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s ease" />
+              </svg>
+              <div class="circ-ring-label">
+                <span class="circ-val" id="circ-water">0</span>
+                <span class="circ-sub">/ 8</span>
+              </div>
+            </div>
+            <div class="circ-title">💧 Water</div>
+            <div class="circ-desc">Glasses today</div>
+          </div>
+
+          <div class="circ-stat-card">
+            <div class="circ-ring-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90" class="circ-svg">
+                <defs>
+                  <linearGradient id="ring-streak" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f9c74f" />
+                    <stop offset="100%" style="stop-color:#ff6b35" />
+                  </linearGradient>
+                </defs>
+                <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" />
+                <circle cx="45" cy="45" r="36" fill="none" stroke="url(#ring-streak)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" id="ring-streak"
+                  style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s ease" />
+              </svg>
+              <div class="circ-ring-label">
+                <span class="circ-val" id="circ-streak">0</span>
+                <span class="circ-sub">days</span>
+              </div>
+            </div>
+            <div class="circ-title">🔥 Streak</div>
+            <div class="circ-desc">Current streak</div>
           </div>
         </div>
 
-        <div class="macros-breakdown">
-          <h3>📊 Macronutrients</h3>
-          <div class="macro-row">
-            <span class="macro-label">Protein</span>
-            <div class="macro-bar-wrap"><div class="macro-bar protein" id="protein-bar" style="width:0%"></div></div>
-            <span class="macro-val" id="protein-val">0 / 150g</span>
+        <!-- ── Water Tracker ── -->
+        <div class="section-card water-tracker-card">
+          <div class="flex-between mb-16">
+            <h3>💧 Daily Water Tracker</h3>
+            <button class="btn btn-outline btn-sm" onclick="resetWater()">🔄 Reset</button>
           </div>
-          <div class="macro-row">
-            <span class="macro-label">Carbs</span>
-            <div class="macro-bar-wrap"><div class="macro-bar carbs" id="carbs-bar" style="width:0%"></div></div>
-            <span class="macro-val" id="carbs-val">0 / 200g</span>
+          <div class="water-glasses" id="water-glasses"></div>
+          <div class="water-tracker-info">
+            <span id="water-count-text">0 of 8 glasses</span>
+            <span class="water-goal-text">Goal: 2L (8 × 250ml)</span>
           </div>
-          <div class="macro-row">
-            <span class="macro-label">Fat</span>
-            <div class="macro-bar-wrap"><div class="macro-bar fat" id="fat-bar" style="width:0%"></div></div>
-            <span class="macro-val" id="fat-val">0 / 65g</span>
+        </div>
+
+        <!-- ── Agent: Weekly Plan ── -->
+        <div class="section-card agent-section">
+          <div class="agent-header">
+            <h3>🤖 AI Weekly Plan</h3>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="agent-badge offline" id="agent-status-badge"><span class="dot"></span>Offline</span>
+              <button class="btn btn-outline btn-sm" onclick="generateWeeklyPlan(true)" id="btn-gen-plan">⚡ New
+                Plan</button>
+            </div>
           </div>
+          <div id="agent-plan-container"></div>
+        </div>
+
+        <!-- ── Agent: Reflection ── -->
+        <div class="section-card agent-section">
+          <div class="agent-header">
+            <h3>📈 Weekly Reflection</h3>
+            <button class="btn btn-outline btn-sm" onclick="runReflection()">🔍 Check My Progress</button>
+          </div>
+          <div id="agent-reflection-container">
+            <div class="empty-log">
+              <div style="font-size:2rem;margin-bottom:8px">📋</div>
+              <p>No reflection yet — click <strong>Check My Progress</strong> to analyse your week.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly calorie chart -->
+        <div class="week-chart">
+          <div class="flex-between mb-16">
+            <h3 style="margin:0">📈 Weekly Calorie Intake</h3>
+            <button class="btn btn-outline btn-sm" onclick="refreshWeeklyChart()" title="Refresh chart data">
+              🔄 Refresh
+            </button>
+          </div>
+          <div class="chart-bars" id="week-chart-bars"></div>
+        </div>
+
+        <!-- ── Achievements ── -->
+        <div class="section-card">
+          <div class="flex-between mb-16">
+            <h3>🏆 Achievements</h3>
+            <span class="achievements-counter" id="achievements-counter">0 / 16</span>
+          </div>
+          <div class="achievements-grid" id="achievements-grid"></div>
+        </div>
+
+        <!-- Daily motivation -->
+        <div class="motivation-card">
+          <div class="quote" id="daily-quote">"The only bad workout is the one that didn't happen."</div>
+          <div class="quote-author" id="daily-quote-author">— Fitness Buddy AI</div>
+          <button class="btn btn-outline btn-sm mt-8" onclick="refreshQuote()">🔄 New Quote</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ════════ PROFILE MODAL ════════ -->
+  <div class="modal-overlay" id="profile-modal">
+    <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+      <h2 id="modal-title">👤 Your Fitness Profile</h2>
+      <p class="subtitle">Tell Buddy about yourself for fully personalized advice, BMI &amp; calorie calculations.</p>
+
+      <!-- Name field -->
+      <div class="form-group">
+        <label for="prof-name">Your Name</label>
+        <input type="text" id="prof-name" placeholder="e.g. Sathish Kumar" autocomplete="name"
+          style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px 12px;font-size:0.9rem;transition:var(--transition);box-sizing:border-box" />
+      </div>
+
+      <!-- BMI Result Banner -->
+      <div class="bmi-banner" id="bmi-banner" style="display:none">
+        <div class="bmi-banner-inner">
+          <div class="bmi-val" id="bmi-display-val">—</div>
+          <div class="bmi-label">BMI</div>
+        </div>
+        <div class="bmi-banner-inner">
+          <div class="bmi-val tdee-val" id="tdee-display-val">—</div>
+          <div class="bmi-label">TDEE (kcal/day)</div>
+        </div>
+        <div class="bmi-banner-inner">
+          <div class="bmi-category" id="bmi-category-text">—</div>
+          <div class="bmi-label">Category</div>
         </div>
       </div>
 
-      <!-- Add Food -->
-      <div class="section-card">
-        <h3>➕ Add Food Entry</h3>
-
-        <!-- Quick-add common foods -->
-        <p class="text-sm text-secondary mb-8">Quick add common foods:</p>
-        <div class="quick-foods mb-16" id="quick-foods-list"></div>
-
-        <div class="divider"></div>
-
-        <!-- Manual entry -->
-        <div class="add-food-grid mt-8">
-          <input type="text" id="food-name" placeholder="Food name (e.g. Chicken breast)" />
-          <input type="number" id="food-calories" placeholder="Calories" min="0" max="9999" />
-          <select id="food-meal">
-            <option value="breakfast">🌅 Breakfast</option>
-            <option value="lunch">☀️ Lunch</option>
-            <option value="dinner" selected>🌙 Dinner</option>
-            <option value="snack">🍎 Snack</option>
+      <!-- Row 1: Age + Gender -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="prof-age">Age</label>
+          <input type="number" id="prof-age" min="10" max="100" placeholder="e.g. 25" oninput="computeBMI()" />
+        </div>
+        <div class="form-group">
+          <label for="prof-gender">Gender</label>
+          <select id="prof-gender" onchange="computeBMI()">
+            <option value="male">♂ Male</option>
+            <option value="female">♀ Female</option>
+            <option value="other">⚡ Other / Prefer not to say</option>
           </select>
         </div>
-        <div class="macro-inputs">
-          <div class="macro-input-wrap">
-            <input type="number" id="food-protein" placeholder="Protein" min="0" max="500" />
-            <span class="unit">g</span>
-          </div>
-          <div class="macro-input-wrap">
-            <input type="number" id="food-carbs" placeholder="Carbs" min="0" max="999" />
-            <span class="unit">g</span>
-          </div>
-          <div class="macro-input-wrap">
-            <input type="number" id="food-fat" placeholder="Fat" min="0" max="500" />
-            <span class="unit">g</span>
-          </div>
+      </div>
+
+      <!-- Row 2: Height + Weight -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="prof-height">Height (cm)</label>
+          <input type="number" id="prof-height" min="100" max="250" placeholder="e.g. 175" oninput="computeBMI()" />
         </div>
-        <div class="flex gap-8">
-          <button class="btn btn-green btn-sm" id="add-food-btn" onclick="addFoodEntry()">➕ Add to Log</button>
-          <button class="btn btn-outline btn-sm" onclick="clearFoodForm()">✕ Clear</button>
-          <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="askAIForCalories()">🤖 Ask AI</button>
+        <div class="form-group">
+          <label for="prof-weight">Weight (kg)</label>
+          <input type="number" id="prof-weight" min="30" max="300" placeholder="e.g. 70" oninput="computeBMI()" />
         </div>
       </div>
 
-      <!-- Food Log -->
-      <div class="section-card">
-        <div class="flex-between mb-16">
-          <h3>📋 Today's Food Log</h3>
-          <button class="btn btn-outline btn-sm" onclick="clearFoodLog()">🗑️ Clear Day</button>
-        </div>
-        <div id="food-log-container">
-          <div class="empty-log">
-            <div style="font-size:2.5rem;margin-bottom:8px">🍽️</div>
-            <p>No meals logged yet today.</p>
-            <p class="text-sm text-muted mt-8">Add your first meal above to start tracking!</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ WORKOUT VIEW ══ -->
-    <section class="view" id="view-workout">
-      <div class="page-header">
-        <h1>💪 Workout Planner</h1>
-        <p>Generate personalized workout routines powered by AI</p>
+      <div class="form-group">
+        <label for="prof-level">Fitness Level</label>
+        <select id="prof-level">
+          <option value="beginner">🌱 Beginner — Just starting out</option>
+          <option value="intermediate">⚡ Intermediate — Working out 2–4x/week</option>
+          <option value="advanced">🔥 Advanced — Training 5+ days/week</option>
+        </select>
       </div>
 
-      <div class="workout-generator">
-        <h2>⚙️ Generate Your Workout</h2>
-        <div class="workout-options">
-          <div>
-            <label for="wk-level">Fitness Level</label>
-            <select id="wk-level">
-              <option value="beginner">🌱 Beginner</option>
-              <option value="intermediate">⚡ Intermediate</option>
-              <option value="advanced">🔥 Advanced</option>
-            </select>
-          </div>
-          <div>
-            <label for="wk-type">Workout Type</label>
-            <select id="wk-type">
-              <option value="home">🏠 Home (No Equipment)</option>
-              <option value="cardio">🏃 Cardio</option>
-              <option value="strength">🏋️ Strength</option>
-              <option value="hiit">⚡ HIIT</option>
-              <option value="yoga">🧘 Yoga / Flexibility</option>
-            </select>
-          </div>
-          <div>
-            <label for="wk-duration">Duration</label>
-            <select id="wk-duration">
-              <option value="20">20 minutes</option>
-              <option value="30" selected>30 minutes</option>
-              <option value="45">45 minutes</option>
-              <option value="60">60 minutes</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn btn-primary" id="gen-workout-btn" onclick="generateWorkout()">
-          ⚡ Generate Workout
-        </button>
-        <div id="workout-result" class="workout-result hidden"></div>
+      <div class="form-group">
+        <label for="prof-goal">Primary Goal</label>
+        <select id="prof-goal">
+          <option value="weight loss">⚖️ Lose weight</option>
+          <option value="muscle gain">💪 Build muscle</option>
+          <option value="stay active">🏃 Stay active &amp; healthy</option>
+          <option value="flexibility">🧘 Improve flexibility</option>
+          <option value="endurance">🏅 Build endurance</option>
+        </select>
       </div>
 
-      <!-- Workout history -->
-      <div class="section-card">
-        <div class="flex-between mb-16">
-          <h3>📅 Workout History</h3>
-          <button class="btn btn-outline btn-sm" onclick="logWorkout()">✅ Log Today's Workout</button>
-        </div>
-        <div class="workout-history" id="workout-history">
-          <div class="empty-log">
-            <div style="font-size:2.5rem;margin-bottom:8px">🏃</div>
-            <p>No workouts logged yet.</p>
-            <p class="text-sm text-muted mt-8">Generate a workout above and log it after completion!</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ DASHBOARD VIEW ══ -->
-    <section class="view" id="view-dashboard">
-      <div class="page-header">
-        <h1>📊 Progress Dashboard</h1>
-        <p>Your fitness journey at a glance</p>
+      <div class="form-group">
+        <label for="prof-equipment">Available Equipment</label>
+        <select id="prof-equipment">
+          <option value="no equipment">🏠 None — Bodyweight only</option>
+          <option value="resistance bands">🎗️ Resistance bands</option>
+          <option value="dumbbells">🏋️ Dumbbells</option>
+          <option value="full gym">🏟️ Full gym access</option>
+        </select>
       </div>
 
-      <!-- Streak -->
-      <div class="streak-display">
-        <div class="streak-fire">🔥</div>
-        <div class="streak-info">
-          <h3>Current Streak</h3>
-          <p>Keep showing up every day!</p>
-        </div>
-        <div class="streak-count" id="streak-count">0</div>
+      <div class="form-group">
+        <label for="prof-diet">Dietary Preference</label>
+        <select id="prof-diet">
+          <option value="no preference">🍽️ No specific preference</option>
+          <option value="vegetarian">🌱 Vegetarian</option>
+          <option value="vegan">🌿 Vegan</option>
+          <option value="low-carb">🥩 Low-carb / Keto</option>
+          <option value="high-protein">💪 High-protein</option>
+        </select>
       </div>
 
-      <!-- Stats grid -->
-      <div class="dashboard-grid">
-        <div class="stat-card blue">
-          <div class="stat-icon">💬</div>
-          <div class="stat-value" id="stat-chats">0</div>
-          <div class="stat-label">AI Conversations</div>
-          <div class="stat-sub">Total sessions with Buddy</div>
-        </div>
-        <div class="stat-card coral">
-          <div class="stat-icon">🔥</div>
-          <div class="stat-value" id="stat-calories">0</div>
-          <div class="stat-label">Calories Today</div>
-          <div class="stat-sub">of <span id="stat-goal">2000</span> goal</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon">💪</div>
-          <div class="stat-value" id="stat-workouts">0</div>
-          <div class="stat-label">Workouts Logged</div>
-          <div class="stat-sub">This week</div>
-        </div>
-        <div class="stat-card purple">
-          <div class="stat-icon">📅</div>
-          <div class="stat-value" id="stat-days">0</div>
-          <div class="stat-label">Days Active</div>
-          <div class="stat-sub">Total app usage days</div>
-        </div>
+      <div class="form-group">
+        <label for="prof-medical">Medical Conditions (optional)</label>
+        <input type="text" id="prof-medical" placeholder="e.g. knee injury, high blood pressure, diabetes..."
+          style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px 12px;font-size:0.9rem;" />
       </div>
 
-      <!-- Weekly calorie chart -->
-      <div class="week-chart">
-        <h3>📈 Weekly Calorie Intake</h3>
-        <div class="chart-bars" id="week-chart-bars"></div>
+      <div class="form-group">
+        <label for="prof-calorie-goal">Daily Calorie Goal (kcal)</label>
+        <input type="number" id="prof-calorie-goal" min="800" max="5000" step="50"
+          placeholder="Auto-calculated from TDEE" />
       </div>
 
-      <!-- Daily motivation -->
-      <div class="motivation-card">
-        <div class="quote" id="daily-quote">"The only bad workout is the one that didn't happen."</div>
-        <div class="quote-author" id="daily-quote-author">— Fitness Buddy AI</div>
-        <button class="btn btn-outline btn-sm mt-8" onclick="refreshQuote()">🔄 New Quote</button>
+      <div class="flex gap-8 mt-16">
+        <button class="btn btn-primary btn-full" onclick="saveProfile()">✅ Save Profile</button>
+        <button class="btn btn-outline" onclick="closeProfileModal()">Cancel</button>
       </div>
-    </section>
 
-  </main>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal-overlay" id="profile-modal">
-  <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-    <h2 id="modal-title">👤 Your Fitness Profile</h2>
-    <p class="subtitle">Personalize Buddy's advice to match your unique goals and preferences.</p>
-
-    <div class="form-group">
-      <label for="prof-level">Fitness Level</label>
-      <select id="prof-level">
-        <option value="beginner">🌱 Beginner — Just starting out</option>
-        <option value="intermediate">⚡ Intermediate — Working out 2–4x/week</option>
-        <option value="advanced">🔥 Advanced — Training 5+ days/week</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="prof-goal">Primary Goal</label>
-      <select id="prof-goal">
-        <option value="weight loss">⚖️ Lose weight</option>
-        <option value="muscle gain">💪 Build muscle</option>
-        <option value="stay active">🏃 Stay active & healthy</option>
-        <option value="flexibility">🧘 Improve flexibility</option>
-        <option value="endurance">🏅 Build endurance</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="prof-equipment">Available Equipment</label>
-      <select id="prof-equipment">
-        <option value="no equipment">🏠 None — Bodyweight only</option>
-        <option value="resistance bands">🎗️ Resistance bands</option>
-        <option value="dumbbells">🏋️ Dumbbells</option>
-        <option value="full gym">🏟️ Full gym access</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="prof-diet">Dietary Preference</label>
-      <select id="prof-diet">
-        <option value="no preference">🍽️ No specific preference</option>
-        <option value="vegetarian">🌱 Vegetarian</option>
-        <option value="vegan">🌿 Vegan</option>
-        <option value="low-carb">🥩 Low-carb / Keto</option>
-        <option value="high-protein">💪 High-protein</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="prof-calorie-goal">Daily Calorie Goal (kcal)</label>
-      <input type="number" id="prof-calorie-goal" min="800" max="5000" step="50" placeholder="e.g. 2000" />
-    </div>
-
-    <div class="flex gap-8 mt-16">
-      <button class="btn btn-primary btn-full" onclick="saveProfile()">✅ Save Profile</button>
-      <button class="btn btn-outline" onclick="closeProfileModal()">Cancel</button>
+      <!-- Disclaimer inside modal -->
+      <p class="modal-disclaimer">⚕️ This app provides general fitness guidance only. Always consult a healthcare
+        professional before starting any new exercise or diet programme.</p>
     </div>
   </div>
-</div>
 
-<!-- Toast container -->
-<div class="toast-container" id="toast-container"></div>
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
 
-<!-- Scripts -->
-<script src="/js/calories.js"></script>
-<script src="/js/workout.js"></script>
-<script src="/js/dashboard.js"></script>
-<script src="/js/app.js"></script>
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner">
+    ⚕️ <strong>Medical Disclaimer:</strong> Fitness Buddy provides general guidance only and is not a substitute for
+    professional medical advice. Consult your doctor before starting any exercise or diet programme.
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/calories.js"></script>
+  <script src="/js/workout.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/agent.js"></script>
+  <script src="/js/achievements.js"></script>
+  <script src="/js/app.js"></script>
+
+  <!-- Watson Orchestrate Agent -->
 
 </body>
+
 </html>
