@@ -104,6 +104,7 @@ Copy `.env` and add your IBM credentials *(skip this step to use mock mode)*:
 IBM_API_KEY=your_ibm_api_key_here
 WATSONX_PROJECT_ID=your_project_id_here
 WATSONX_SERVICE_URL=https://eu-de.ml.cloud.ibm.com
+IBM Granite=ibm/granite-3-1-8b-base, ibm/granite-4-h-small
 PORT=3000
 ```
 
