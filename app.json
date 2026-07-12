@@ -1,0 +1,110 @@
+{
+  "name": "fitness-buddy",
+  "version": "1.0.0",
+  "description": "AI-powered personal fitness coach and health companion powered by IBM Granite",
+  "author": "Fitness Buddy Team",
+  "license": "MIT",
+
+  "app": {
+    "title": "Fitness Buddy",
+    "tagline": "Your AI-Powered Personal Fitness Coach",
+    "theme": "dark",
+    "locale": "en"
+  },
+
+  "server": {
+    "port": 3000,
+    "host": "0.0.0.0",
+    "environment": "development",
+    "entrypoint": "server/server.js",
+    "startCommand": "npm start",
+    "devCommand": "npm run dev"
+  },
+
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+
+  "features": {
+    "aiChat": true,
+    "workoutPlanner": true,
+    "calorieTracker": true,
+    "bmiCalculator": true,
+    "tdeeCalculator": true,
+    "achievements": true,
+    "progressTracking": true,
+    "mockMode": true
+  },
+
+  "ai": {
+    "provider": "IBM WatsonX",
+    "models": [
+      "ibm/granite-3-1-8b-base",
+      "ibm/granite-4-h-small"
+    ],
+    "defaultModel": "ibm/granite-3-1-8b-base",
+    "mockFallback": true,
+    "serviceUrl": "https://eu-de.ml.cloud.ibm.com"
+  },
+
+  "environment": {
+    "required": [
+      "IBM_API_KEY",
+      "WATSONX_PROJECT_ID"
+    ],
+    "optional": [
+      "WATSONX_SERVICE_URL",
+      "PORT",
+      "NODE_ENV"
+    ],
+    "defaults": {
+      "PORT": "3000",
+      "NODE_ENV": "development",
+      "WATSONX_SERVICE_URL": "https://eu-de.ml.cloud.ibm.com"
+    }
+  },
+
+  "deployment": {
+    "ibmCloud": {
+      "memory": "256M",
+      "instances": 1,
+      "buildpack": "nodejs_buildpack",
+      "randomRoute": true
+    },
+    "docker": {
+      "port": 3000,
+      "healthCheck": "/api/health"
+    }
+  },
+
+  "api": {
+    "basePath": "/api",
+    "endpoints": {
+      "health": "/api/health",
+      "chat": "/api/chat",
+      "agent": "/api/agent",
+      "workout": "/api/workout",
+      "calories": "/api/calories"
+    },
+    "rateLimit": {
+      "windowMs": 60000,
+      "maxRequests": 100
+    }
+  },
+
+  "security": {
+    "helmet": true,
+    "cors": true,
+    "allowedOrigins": ["*"]
+  },
+
+  "build": {
+    "publicDir": "public",
+    "assetsDir": "public/assets",
+    "jsDir": "public/js",
+    "cssDir": "public/css"
+  },
+
+  "keywords": ["fitness", "ai", "health", "nutrition", "workout", "chatbot", "ibm-granite", "watsonx"]
+}
